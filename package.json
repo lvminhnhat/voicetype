@@ -6,7 +6,7 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build-win": "electron-packager . voicetype --platform=win32 --arch=x64 --overwrite --ignore=dist --ignore=.git --ignore=voicetype-win32-x64",
+    "build-win": "electron-packager . voicetype --platform=win32 --arch=x64 --overwrite --icon=assets/icon.ico --ignore=dist --ignore=.git --ignore=voicetype-win32-x64",
     "build:installer": "node build-installer.js"
   },
   "keywords": [],
@@ -17,7 +17,10 @@
     "electron": "^33.2.0",
     "electron-builder": "24.13.3",
     "electron-packager": "^17.1.2",
-    "electron-winstaller": "^5.4.0"
+    "electron-winstaller": "^5.4.0",
+    "jimp": "^1.6.0",
+    "png-to-ico": "^3.0.1",
+    "to-ico": "^1.1.5"
   },
   "build": {
     "appId": "com.minnyat.voicetype",
