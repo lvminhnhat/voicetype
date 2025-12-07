@@ -8,7 +8,8 @@ Designed for productivity, VoiceType features a minimalist overlay, global hotke
 
 ## ✨ Features
 
-*   **🎙️ AI-Powered Transcription**: High-accuracy speech-to-text using Google Gemini 1.5 Flash.
+*   **🎙️ AI-Powered Transcription**: High-accuracy speech-to-text using **Gemini 2.5 Flash Lite Preview**.
+*   **🤖 Smart Correction**: Automatic grammar and spelling correction using **Gemini 1.5 Flash**.
 *   **🧩 Overlay UI**: Unobtrusive floating window that appears only when you need it.
 *   **⌨️ Global Hotkey**: Toggle recording instantly from anywhere (Default: `Ctrl+Alt+V`).
 *   **📋 Auto-Paste**: Automatically types the transcribed text into your active window.
