@@ -62,7 +62,7 @@ if (!gotTheLock) {
         });
 
         // Make window draggable
-        ipcMain.on('minimize-window', () => mainWindow.minimize());
+        ipcMain.on('minimize-window', () => mainWindow.hide());
         ipcMain.on('close-window', () => mainWindow.close());
 
         mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
