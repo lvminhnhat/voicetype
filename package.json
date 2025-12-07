@@ -5,15 +5,32 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "build-win": "electron-packager . voicetype --platform=win32 --arch=x64 --overwrite --ignore=dist --ignore=.git --ignore=voicetype-win32-x64",
+    "build:installer": "node build-installer.js"
   },
   "keywords": [],
   "author": "Minnyat",
   "license": "ISC",
   "description": "Voice-to-Text application",
-  "dependencies": {},
   "devDependencies": {
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "24.13.3",
+    "electron-packager": "^17.1.2",
+    "electron-winstaller": "^5.4.0"
+  },
+  "build": {
+    "appId": "com.minnyat.voicetype",
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    }
   }
 }
