@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceType Settings</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="title-bar">
+        <div class="drag-region">
+            <img src="../../assets/logo.png" style="height: 20px; margin-right: 8px;">
+            <span class="app-title">VoiceType</span>
+        </div>
+        <div class="window-controls">
+            <button id="minimizeBtn" class="control-btn">&#8212;</button>
+            <button id="closeBtn" class="control-btn">&#10005;</button>
+        </div>
+    </div>
+    <div class="container">
+        <!-- Removed h1 as it is now in title bar -->
+
+        <div class="tabs">
+            <div class="tab-group">
+                <button class="tab-btn active" onclick="openTab('settings')">Settings</button>
+                <button class="tab-btn" onclick="openTab('history')">History</button>
+            </div>
+            <div class="meta-info">
+                <span class="author-prefix">Dev: </span>
+                <a href="https://minnyat.dev" target="_blank" class="author-link">Minnyat</a>
+                <span class="version-text"> | v<span id="appVersion"></span></span>
+            </div>
+        </div>
+
+        <div id="settings" class="tab-content active">
+            <div class="section">
+                <h2>General Config</h2>
+                <label>Language</label>
+                <select id="languageSelect">
+                    <option value="vi-VN">Tiếng Việt</option>
+                    <option value="en-US">English (US)</option>
+                </select>
+
+                <div class="switch-container">
+                    <span>Auto-paste to focused app</span>
+                    <input type="checkbox" id="autoPasteToggle">
+                </div>
+
+                <div class="switch-container">
+                    <span>Voice Commands (Punctuation)</span>
+                    <input type="checkbox" id="voiceCmdToggle" checked>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Recording Hotkey</h2>
+                <div class="key-item">
+                    <span>Start/Stop Recording</span>
+                    <span>Ctrl+Alt+V</span>
+                </div>
+                <p><small>(Restart app to apply hotkey changes)</small></p>
+            </div>
+
+            <div class="section">
+                <h2>Gemini API Keys</h2>
+                <p>Add multiple keys to enable auto-rotation.</p>
+                <div class="input-group">
+                    <input type="text" id="apiKeyInput" placeholder="Enter Gemini API Key">
+                    <button id="addKeyBtn">Add</button>
+                </div>
+                <div id="keyList" class="key-list">
+                    <!-- Keys will be listed here -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Test Voice</h2>
+                <p>Speak to check if microphone is working (in Overlay).</p>
+            </div>
+        </div>
+
+        <div id="history" class="tab-content">
+            <div class="section">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative;">
+                    <h2>Transcription History</h2>
+                    <button onclick="clearHistory()" class="icon-btn clear-all-btn"
+                        title="Clear All History">🗑️</button>
+                </div>
+                <div id="historyList">
+                    <div style="padding: 20px; text-align: center; color: #777;">No history yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Custom Close Confirmation Modal -->
+    <div id="exitModal" class="modal">
+        <div class="modal-content">
+            <h2>Close VoiceType?</h2>
+            <p>You can keep the app running in the background.</p>
+            <div class="modal-actions">
+                <button onclick="confirmMinimize()">Minimize to Tray</button>
+                <button onclick="confirmQuit()" class="danger-btn">Quit App</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear History Confirmation Modal -->
+    <div id="clearHistoryModal" class="modal">
+        <div class="modal-content">
+            <h2>Clear History?</h2>
+            <p>Are you sure you want to delete all transcription history?</p>
+            <div class="modal-actions">
+                <button onclick="cancelClearHistory()">Cancel</button>
+                <button onclick="confirmClearHistory()" class="danger-btn">Clear All</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>

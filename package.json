@@ -1,0 +1,19 @@
+{
+  "name": "voicetype",
+  "version": "0.0.1",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Minnyat",
+  "license": "ISC",
+  "description": "Voice-to-Text application",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}

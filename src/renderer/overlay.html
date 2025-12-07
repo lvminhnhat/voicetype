@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            border-radius: 10px;
+            font-family: sans-serif;
+            overflow: hidden;
+            -webkit-app-region: drag;
+            /* Allow dragging */
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .status {
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: red;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #transcript {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #ddd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="status">
+            <div class="dot"></div>
+            <span>Listening...</span>
+        </div>
+        <div id="transcript"> Waiting for speech... </div>
+        <div id="error" style="color: pink; font-size: 10px;"></div>
+    </div>
+    <script>
+        const { ipcRenderer, clipboard } = require('electron');
+
+        // Custom Logger
+        function log(msg) {
+            console.log(msg);
+            ipcRenderer.send('log', msg);
+        }
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let shouldBeRecording = false;
+        let config = {};
+
+        // Request microphone access
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                log('Microphone access granted');
+                window.localStream = stream; // Keep reference
+            })
+            .catch(err => {
+                log('Microphone access denied: ' + err);
+                document.getElementById('error').innerText = 'Mic Denied: ' + err;
+            });
+
+        function startRecording() {
+            if (!window.localStream) {
+                log('No microphone stream');
+                document.getElementById('error').innerText = 'No Mic Stream';
+                return;
+            }
+
+            audioChunks = [];
+
+            try {
+                mediaRecorder = new MediaRecorder(window.localStream);
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    log('Recorder stopped. Chunks: ' + audioChunks.length);
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // Electron typically supports webm
+
+                    // Convert Blob to ArrayBuffer to send over IPC
+                    const reader = new FileReader();
+                    reader.readAsArrayBuffer(audioBlob);
+                    reader.onloadend = () => {
+                        const buffer = Buffer.from(reader.result);
+                        ipcRenderer.send('audio-data', {
+                            buffer: buffer,
+                            config: config
+                        });
+                        log('Sent audio data: ' + buffer.length + ' bytes');
+                    };
+                };
+
+                mediaRecorder.start();
+                log('MediaRecorder started');
+                document.getElementById('transcript').innerText = 'Listening... (Recording)';
+                document.getElementById('error').innerText = '';
+            } catch (e) {
+                log('Error starting recorder: ' + e);
+                document.getElementById('error').innerText = 'Rec Error: ' + e;
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                log('MediaRecorder stopping...');
+                document.getElementById('transcript').innerText = 'Processing...';
+            }
+        }
+
+        ipcRenderer.on('start-recording', (event, receivedConfig) => {
+            log('Start command received.');
+            shouldBeRecording = true;
+            if (receivedConfig) config = receivedConfig;
+
+            startRecording();
+        });
+
+        ipcRenderer.on('stop-recording', () => {
+            log('Stop command received.');
+            shouldBeRecording = false;
+            stopRecording();
+        });
+
+        ipcRenderer.on('transcript-result', (event, text) => {
+            document.getElementById('transcript').innerText = text;
+            // Logic to copy/paste is now handled in Main or here? 
+            // Main handles it in the plan, but let's keep consistent UI feedback.
+        });
+
+        ipcRenderer.on('transcript-error', (event, err) => {
+            document.getElementById('error').innerText = err;
+            document.getElementById('transcript').innerText = 'Error';
+        });
+
+    </script>
+</body>
+
+</html>
