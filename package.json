@@ -6,7 +6,7 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build-win": "electron-packager . voicetype --platform=win32 --arch=x64 --overwrite --icon=assets/icon.ico --ignore=dist --ignore=.git --ignore=voicetype-win32-x64",
+    "build-win": "electron-packager . voicetype --platform=win32 --arch=x64 --overwrite --icon=assets/icon.ico --ignore=dist --ignore=installers --ignore=.git --ignore=voicetype-win32-x64 --ignore=build-installer.js --ignore=generate-icon.js",
     "build:installer": "node build-installer.js"
   },
   "keywords": [],
@@ -35,5 +35,8 @@
     "directories": {
       "output": "dist"
     }
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1"
   }
 }
